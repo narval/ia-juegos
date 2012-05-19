@@ -34,6 +34,7 @@ class Comportamiento():
         return [
             ["defecto"    ,                 Comportamiento.defecto],
             ["delfin"    ,                  Comportamiento.delfin],
+            ["pulpo"    ,                   Comportamiento.pulpo],
             ["caza" ,                       Comportamiento.caza],
             ["rodear" ,                     Comportamiento.rodear],
             ["huir" ,                       Comportamiento.huir],
@@ -60,6 +61,7 @@ class Comportamiento():
             "anti_face" :           Enemigo.anti_face,
             "face_frente" :         Enemigo.face_frente,
             "ir_nadando" :          Enemigo.ir_nadando,
+            "ir_pulpo" :            Enemigo.ir_pulpo,
             "wandering" :           Enemigo.wandering,
             "kinematic_wander" :    Enemigo.kinematic_wander,
             "ir_derecho" :          Enemigo.ir_derecho,
@@ -149,6 +151,25 @@ class Comportamiento():
             ["alinearse" ,           0],
             ["velocity_match" ,      0],
             ["separacion" ,          5],
+            ["evitarcolision" ,      0]
+            ]
+            
+    @staticmethod
+    def pulpo():
+        return [
+            ["seek"    ,             0],
+            ["seek_llegada" ,        0],
+            ["flee" ,                0],
+            ["flee_llegada" ,        0],
+            ["face" ,                1],
+            ["anti_face" ,           0],
+            ["face_frente" ,         0],
+            ["wandering" ,           0],
+            ["kinematic_wander" ,    0],
+            ["ir_pulpo" ,            1],
+            ["alinearse" ,           0],
+            ["velocity_match" ,      0],
+            ["separacion" ,          1],
             ["evitarcolision" ,      0]
             ]
 

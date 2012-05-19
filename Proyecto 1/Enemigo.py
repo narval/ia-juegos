@@ -176,6 +176,17 @@ class Enemigo(Personaje):
         casi =  [(x*0.003)/module, (y*0.003)/module, 0] 
         tangencial = [casi[1]*math.sin(math.radians(self.recorrido)), -casi[0]*math.sin(math.radians(self.recorrido)), 0]
         return suma_v(casi, tangencial), 0
+        
+    def ir_pulpo(self):
+        self.recorrido += 2
+        self.recorrido %= 360
+        target = self.target.posi
+        x = target[0] - self.posi[0]
+        y = target[1] - self.posi[1]
+        module = math.sqrt(x**2 + y**2)
+        casi =  [(x*0.003)/module, (y*0.003)/module, 0] 
+        tangencial = [casi[0]*math.sin(math.radians(self.recorrido)), casi[1]*math.sin(math.radians(self.recorrido)), 0]
+        return suma_v(casi, tangencial), 0
 
     # Algoritmo que cambia la dirección actual por la dirección 
     # del objetivo
