@@ -99,6 +99,15 @@ def main():
             Enemigo(jugador, [100*num_enemigos,100], [30,30], "imagenes/aliado.png", [grupo_todos, grupo_personajes, grupo_enemigos, grupo_dibujables,       grupo_colisionables],"E" + str(num_enemigos)).add(grupo_enemigos)
             num_enemigos += 1
             
+        if not keysanteriores[K_9] and keys[K_9]:
+            Enemigo(jugador, [100*num_enemigos,100], [50,100], "imagenes/jefe.png", [grupo_todos, grupo_personajes, grupo_enemigos, grupo_dibujables,       grupo_colisionables],"T" + str(num_enemigos)).add(grupo_enemigos)
+            num_enemigos += 1
+            
+        if not keysanteriores[K_p] and keys[K_p]:
+            Enemigo(jugador, [100*num_enemigos,100], [70,70], "imagenes/char.png", [grupo_todos, grupo_personajes, grupo_enemigos, grupo_dibujables,       grupo_colisionables],"T" + str(num_enemigos)).add(grupo_enemigos)
+            num_enemigos += 1 
+            
+            
         keysanteriores = keys
 # ------- Manejo de los personajes y objetos
 
