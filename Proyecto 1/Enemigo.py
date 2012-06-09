@@ -6,6 +6,7 @@
 import sys, pygame
 from Jugador import *
 from Personaje import *
+from Comportamiento import *
 import math
 import random
 import copy
@@ -32,6 +33,7 @@ class Enemigo(Personaje):
         self.keysanteriores = None
         self.colisiona = True
         self.recorrido = 0
+        self.comportamiento = Comportamiento(self)
 
         self.mask = pygame.mask.from_surface(self.image)
         self.groups = grupos
@@ -41,6 +43,13 @@ class Enemigo(Personaje):
         self.colisionable = False
         if self in grupo_colisionables:
             self.colisionable = True
+         
+            
+    def moverse(self):
+        self.acel, self.acel_angular = self.comportamiento.movimiento_total()
+        
+    def siguiente_comportamiento(self):
+        self.comportamiento.siguiente()
 
     # algoritmo de busqueda simple
     def seek(self):
@@ -76,8 +85,11 @@ class Enemigo(Personaje):
         dirx = target[0] - self.posi[0]
         diry = target[1] - self.posi[1]
         module = math.sqrt(dirx**2 + diry**2)
-        x = -(dirx * 0.003) / module
-        y = -(diry * 0.003) / module
+        if module != 0:
+            x = -(dirx * 0.003) / module
+            y = -(diry * 0.003) / module
+        else:
+            x, y = 0, 0
         return [x, y, 0], 0
 
     # algoritmo de busqueda con aumento gradual de la 
@@ -173,9 +185,14 @@ class Enemigo(Personaje):
         x = target[0] - self.posi[0]
         y = target[1] - self.posi[1]
         module = math.sqrt(x**2 + y**2)
-        casi =  [(x*0.003)/module, (y*0.003)/module, 0] 
-        tangencial = [casi[1]*math.sin(math.radians(self.recorrido)), -casi[0]*math.sin(math.radians(self.recorrido)), 0]
-        return suma_v(casi, tangencial), 0
+        casi = [0, 0, 0], 0
+        tangencial = [0, 0, 0], 0
+        if module != 0:
+            casi =  [(x*0.003)/module, (y*0.003)/module, 0] 
+            tangencial = [casi[1]*math.sin(math.radians(self.recorrido)), -casi[0]*math.sin(math.radians(self.recorrido)), 0]
+            return suma_v(casi, tangencial), 0
+        else:
+            return [0, 0, 0], 0
         
     def ir_pulpo(self):
         self.recorrido += 2
@@ -184,8 +201,11 @@ class Enemigo(Personaje):
         x = target[0] - self.posi[0]
         y = target[1] - self.posi[1]
         module = math.sqrt(x**2 + y**2)
-        casi =  [(x*0.003)/module, (y*0.003)/module, 0] 
-        tangencial = [casi[0]*math.sin(math.radians(self.recorrido)), casi[1]*math.sin(math.radians(self.recorrido)), 0]
+        if module != 0:
+            casi =  [(x*0.003)/module, (y*0.003)/module, 0] 
+            tangencial = [casi[0]*math.sin(math.radians(self.recorrido)), casi[1]*math.sin(math.radians(self.recorrido)), 0]
+        else:
+            casi, tangencial = [0, 0, 0], [0, 0, 0]
         return suma_v(casi, tangencial), 0
 
     # Algoritmo que cambia la dirección actual por la dirección 

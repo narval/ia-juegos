@@ -1,0 +1,359 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# Hecho Por Isaac López Procopio
+# 07-41120
+
+import sys, pygame
+from Jugador import *
+from Personaje import *
+from Enemigo import *
+import math
+import random
+
+# Clase que maneja los comportamientos de los enemigos
+class Comportamiento():
+    def __init__(self, enemigo):
+        self.comportamiento = self.defecto()
+        self.estado = 0
+        self.enemigo = enemigo
+
+    # Función que devuelve un String con el nombre del comportamiento
+    # que se está ejecutando actualmente
+    def comportamiento_actual(self):
+        return self.comportamientos()[self.actual][0]
+
+    # Función que devuelve la lista indexada (diccionario) con los
+    # nombres de los comportamientos y una instancia de sus métodos
+    @staticmethod
+    def comportamientos():
+        return [
+            ["defecto"    ,                 Comportamiento.defecto],
+            ["delfin"    ,                  Comportamiento.delfin],
+            ["pulpo"    ,                   Comportamiento.pulpo],
+            ["caza" ,                       Comportamiento.caza],
+            ["rodear" ,                     Comportamiento.rodear],
+            ["huir" ,                       Comportamiento.huir],
+            ["merodear_tontamemte" ,        Comportamiento.merodear_tontamemte],
+            ["merodear_like_a_boss" ,       Comportamiento.merodear_like_a_boss],
+            ["merodear_like_a_pro" ,        Comportamiento.merodear_like_a_pro],
+            ["bailar" ,                     Comportamiento.bailar],
+            ["defender" ,                   Comportamiento.defender],
+            ["defender_alinearse" ,         Comportamiento.defender_alinearse],
+            ["rodear_amenazantemente" ,     Comportamiento.rodear_amenazantemente],
+            ["defensa_giratoria" ,          Comportamiento.defensa_giratoria]
+            ]
+
+    # Función que devuelve la lista indexada de los nombres de los
+    # algoritmos de movientos de los enemigos y su método
+    def movimientos(self):
+        return { 
+            "seek"    :             self.enemigo.seek,
+            "seek_llegada" :        self.enemigo.seek_llegada,
+            "flee" :                self.enemigo.flee,
+            "flee_llegada" :        self.enemigo.flee_llegada,
+            "face" :                self.enemigo.face,
+            "anti_face" :           self.enemigo.anti_face,
+            "face_frente" :         self.enemigo.face_frente,
+            "ir_nadando" :          self.enemigo.ir_nadando,
+            "ir_pulpo" :            self.enemigo.ir_pulpo,
+            "wandering" :           self.enemigo.wandering,
+            "kinematic_wander" :    self.enemigo.kinematic_wander,
+            "ir_derecho" :          self.enemigo.ir_derecho,
+            "alinearse" :           self.enemigo.alinearse,
+            "velocity_match" :      self.enemigo.velocitymatch,
+            "separacion" :          self.enemigo.separacion,
+            "evitarcolision" :      self.enemigo.evitarcolision,
+            "evitarcolision2" :     self.enemigo.evitarcolision2,
+            "evitarcolision3" :     self.enemigo.evitarcolision3,
+            "girar" :               self.enemigo.girar
+            }
+
+#------ Sección de comportamientos
+#-----En esta sección se listan y ponderan los algoritmos
+#-----que componen cada comportamiento
+    @staticmethod
+    def defecto():
+        return [
+            ["seek"    ,             0],
+            ["seek_llegada" ,        0],
+            ["flee" ,                0],
+            ["flee_llegada" ,        0],
+            ["face" ,                0],
+            ["anti_face" ,           0],
+            ["face_frente" ,         0],
+            ["wandering" ,           0],
+            ["kinematic_wander" ,    0],
+            ["ir_derecho" ,          0],
+            ["alinearse" ,           0],
+            ["velocity_match" ,      0],
+            ["separacion" ,          1],
+            ["evitarcolision" ,      0]
+            ]
+
+    @staticmethod
+    def delfin():
+        return [
+            ["seek"    ,             0],
+            ["seek_llegada" ,        0],
+            ["flee" ,                0],
+            ["flee_llegada" ,        0],
+            ["face" ,                0],
+            ["anti_face" ,           0],
+            ["face_frente" ,         1],
+            ["wandering" ,           0],
+            ["kinematic_wander" ,    0],
+            ["ir_nadando" ,          1],
+            ["alinearse" ,           0],
+            ["velocity_match" ,      0],
+            ["separacion" ,          3],
+            ["evitarcolision" ,      0]
+            ]
+
+    @staticmethod
+    def caza():
+        return [
+            ["seek"    ,             2],
+            ["seek_llegada" ,        0],
+            ["flee" ,                0],
+            ["flee_llegada" ,        0],
+            ["face" ,                1],
+            ["anti_face" ,           0],
+            ["face_frente" ,         0],
+            ["wandering" ,           0],
+            ["kinematic_wander" ,    0],
+            ["ir_derecho" ,          0],
+            ["alinearse" ,           0],
+            ["velocity_match" ,      0],
+            ["separacion" ,          4],
+            ["evitarcolision2" ,     1],
+            ["evitarcolision3" ,    10]
+            ]
+
+    @staticmethod
+    def rodear():
+        return [
+            ["seek"    ,             0],
+            ["seek_llegada" ,        4],
+            ["flee" ,                0],
+            ["flee_llegada" ,        0],
+            ["face" ,                1],
+            ["anti_face" ,           0],
+            ["face_frente" ,         0],
+            ["wandering" ,           0],
+            ["kinematic_wander" ,    0],
+            ["ir_derecho" ,          0],
+            ["alinearse" ,           0],
+            ["velocity_match" ,      0],
+            ["separacion" ,          5],
+            ["evitarcolision" ,      0]
+            ]
+            
+    @staticmethod
+    def pulpo():
+        return [
+            ["seek"    ,             0],
+            ["seek_llegada" ,        0],
+            ["flee" ,                0],
+            ["flee_llegada" ,        0],
+            ["face" ,                1],
+            ["anti_face" ,           0],
+            ["face_frente" ,         0],
+            ["wandering" ,           0],
+            ["kinematic_wander" ,    0],
+            ["ir_pulpo" ,            1],
+            ["alinearse" ,           0],
+            ["velocity_match" ,      0],
+            ["separacion" ,          4],
+            ["evitarcolision2" ,      4]
+            ]
+
+    @staticmethod
+    def rodear_amenazantemente():
+        return [
+            ["seek"    ,             0],
+            ["seek_llegada" ,        4],
+            ["flee" ,                0],
+            ["flee_llegada" ,        0],
+            ["face" ,                1],
+            ["anti_face" ,           0],
+            ["face_frente" ,         0],
+            ["wandering" ,           0],
+            ["kinematic_wander" ,    0],
+            ["ir_derecho" ,          0],
+            ["alinearse" ,           0],
+            ["velocity_match" ,      0],
+            ["separacion" ,          6],
+            ["girar" ,               1]
+            ]
+
+    @staticmethod
+    def huir():
+        return [
+            ["seek"    ,             0],
+            ["seek_llegada" ,        0],
+            ["flee" ,                1],
+            ["flee_llegada" ,        1],
+            ["face" ,                0],
+            ["anti_face" ,           0],
+            ["face_frente" ,         1],
+            ["wandering" ,           0],
+            ["kinematic_wander" ,    0],
+            ["ir_derecho" ,          0],
+            ["alinearse" ,           0],
+            ["velocity_match" ,      0],
+            ["separacion" ,          4],
+            ["evitarcolision" ,      0]
+            ]
+
+
+    @staticmethod
+    def merodear_tontamemte():
+        return [
+            ["seek"    ,             0],
+            ["seek_llegada" ,        0],
+            ["flee" ,                0],
+            ["flee_llegada" ,        0],
+            ["face" ,                0],
+            ["anti_face" ,           0],
+            ["face_frente" ,         1],
+            ["wandering" ,           1],
+            ["kinematic_wander" ,    0],
+            ["ir_derecho" ,          0],
+            ["alinearse" ,           0],
+            ["velocity_match" ,      0],
+            ["separacion" ,          0],
+            ["evitarcolision" ,      0]
+            ]
+
+    @staticmethod
+    def merodear_like_a_boss():
+        return [
+            ["seek"    ,             0],
+            ["seek_llegada" ,        0],
+            ["flee" ,                0],
+            ["flee_llegada" ,        0],
+            ["face" ,                0],
+            ["anti_face" ,           0],
+            ["face_frente" ,         1],
+            ["wandering" ,           1],
+            ["kinematic_wander" ,    0],
+            ["ir_derecho" ,          1],
+            ["alinearse" ,           0],
+            ["velocity_match" ,      0],
+            ["separacion" ,          1],
+            ["evitarcolision" ,      1]
+            ]
+
+    @staticmethod
+    def merodear_like_a_pro():
+        return [
+            ["seek"    ,             0],
+            ["seek_llegada" ,        0],
+            ["flee" ,                0],
+            ["flee_llegada" ,        0],
+            ["face" ,                0],
+            ["anti_face" ,           0],
+            ["face_frente" ,         1],
+            ["wandering" ,           1],
+            ["kinematic_wander" ,    0],
+            ["ir_derecho" ,          1],
+            ["alinearse" ,           0],
+            ["velocity_match" ,      0],
+            ["separacion" ,          1],
+            ["evitarcolision2" ,     1]
+            ]
+
+    @staticmethod
+    def bailar():
+        return [
+            ["seek"    ,             0],
+            ["seek_llegada" ,        0],
+            ["flee" ,                0],
+            ["flee_llegada" ,        0],
+            ["face" ,                0],
+            ["anti_face" ,           0],
+            ["face_frente" ,         0],
+            ["wandering" ,           0],
+            ["kinematic_wander" ,    0],
+            ["ir_derecho" ,          0],
+            ["alinearse" ,           1],
+            ["velocity_match" ,      1],
+            ["separacion" ,          1],
+            ["evitarcolision" ,      0]
+            ]
+
+    @staticmethod
+    def defender():
+        return [
+            ["seek"    ,             0],
+            ["seek_llegada" ,        5],
+            ["flee" ,                0],
+            ["flee_llegada" ,        0],
+            ["face" ,                0],
+            ["anti_face" ,           1],
+            ["face_frente" ,         0],
+            ["wandering" ,           0],
+            ["kinematic_wander" ,    0],
+            ["ir_derecho" ,          0],
+            ["alinearse" ,           0],
+            ["velocity_match" ,      1],
+            ["separacion" ,          7],
+            ["evitarcolision" ,      0]
+            ]
+
+    @staticmethod
+    def defender_alinearse():
+        return [
+            ["seek"    ,             0],
+            ["seek_llegada" ,        5],
+            ["flee" ,                0],
+            ["flee_llegada" ,        0],
+            ["face" ,                0],
+            ["anti_face" ,           1],
+            ["face_frente" ,         0],
+            ["wandering" ,           0],
+            ["kinematic_wander" ,    0],
+            ["ir_derecho" ,          0],
+            ["alinearse" ,           2],
+            ["velocity_match" ,      1],
+            ["separacion" ,          7],
+            ["evitarcolision" ,      0]
+            ]
+
+    @staticmethod
+    def defensa_giratoria():
+        return [
+            ["seek"    ,             0],
+            ["seek_llegada" ,        5],
+            ["flee" ,                0],
+            ["flee_llegada" ,        0],
+            ["face" ,                0],
+            ["anti_face" ,           0],
+            ["face_frente" ,         3],
+            ["wandering" ,           0],
+            ["kinematic_wander" ,    0],
+            ["ir_derecho" ,          0],
+            ["alinearse" ,           0],
+            ["velocity_match" ,      1],
+            ["separacion" ,         10],
+            ["girar" ,               4]
+            ]
+
+
+# ------- Fin area de comportamientos
+
+    # Función que calcula el vextor aceleración y la aceleración angular
+    # resultante de aplicar los comportamientos sobre un enemigo
+    def movimiento_total(self, target):
+        if math.sqrt((target.posi[0] - self.enemigo.posi[0])**2 + (target.posi[1] - self.enemigo.posi[1])**2) > 300:
+            self.comportamiento = self.merodear_like_a_pro()
+        else:
+            self.comportamiento = self.caza()
+        aceleracion = [0, 0, 0]
+        acel_angular = 0
+        for algoritmo in range(0, len(self.comportamiento)):
+            if self.comportamiento[algoritmo][1] != 0:
+                com = self.movimientos()[self.comportamiento[algoritmo][0]]
+                aceleracion = suma_v(aceleracion, escalar_v(com(target)[0], self.comportamiento[algoritmo][1]))
+                acel_angular += com(target)[1] * self.comportamiento[algoritmo][1]    
+        return aceleracion, acel_angular

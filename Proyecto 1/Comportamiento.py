@@ -12,9 +12,10 @@ import random
 
 # Clase que maneja los comportamientos de los enemigos
 class Comportamiento():
-    def __init__(self):
+    def __init__(self, enemigo):
         self.comportamiento = self.defecto()
         self.actual = 0
+        self.enemigo = enemigo
 
     # Función que devuelve un String con el nombre del comportamiento
     # que se está ejecutando actualmente
@@ -50,28 +51,27 @@ class Comportamiento():
 
     # Función que devuelve la lista indexada de los nombres de los
     # algoritmos de movientos de los enemigos y su método
-    @staticmethod
-    def movimientos():
+    def movimientos(self):
         return { 
-            "seek"    :             Enemigo.seek,
-            "seek_llegada" :        Enemigo.seek_llegada,
-            "flee" :                Enemigo.flee,
-            "flee_llegada" :        Enemigo.flee_llegada,
-            "face" :                Enemigo.face,
-            "anti_face" :           Enemigo.anti_face,
-            "face_frente" :         Enemigo.face_frente,
-            "ir_nadando" :          Enemigo.ir_nadando,
-            "ir_pulpo" :            Enemigo.ir_pulpo,
-            "wandering" :           Enemigo.wandering,
-            "kinematic_wander" :    Enemigo.kinematic_wander,
-            "ir_derecho" :          Enemigo.ir_derecho,
-            "alinearse" :           Enemigo.alinearse,
-            "velocity_match" :      Enemigo.velocitymatch,
-            "separacion" :          Enemigo.separacion,
-            "evitarcolision" :      Enemigo.evitarcolision,
-            "evitarcolision2" :     Enemigo.evitarcolision2,
-            "evitarcolision3" :     Enemigo.evitarcolision3,
-            "girar" :               Enemigo.girar
+            "seek"    :             self.enemigo.seek,
+            "seek_llegada" :        self.enemigo.seek_llegada,
+            "flee" :                self.enemigo.flee,
+            "flee_llegada" :        self.enemigo.flee_llegada,
+            "face" :                self.enemigo.face,
+            "anti_face" :           self.enemigo.anti_face,
+            "face_frente" :         self.enemigo.face_frente,
+            "ir_nadando" :          self.enemigo.ir_nadando,
+            "ir_pulpo" :            self.enemigo.ir_pulpo,
+            "wandering" :           self.enemigo.wandering,
+            "kinematic_wander" :    self.enemigo.kinematic_wander,
+            "ir_derecho" :          self.enemigo.ir_derecho,
+            "alinearse" :           self.enemigo.alinearse,
+            "velocity_match" :      self.enemigo.velocitymatch,
+            "separacion" :          self.enemigo.separacion,
+            "evitarcolision" :      self.enemigo.evitarcolision,
+            "evitarcolision2" :     self.enemigo.evitarcolision2,
+            "evitarcolision3" :     self.enemigo.evitarcolision3,
+            "girar" :               self.enemigo.girar
             }
 
 #------ Sección de comportamientos
@@ -111,7 +111,7 @@ class Comportamiento():
             ["ir_nadando" ,          1],
             ["alinearse" ,           0],
             ["velocity_match" ,      0],
-            ["separacion" ,          1],
+            ["separacion" ,          3],
             ["evitarcolision" ,      0]
             ]
 
@@ -169,8 +169,8 @@ class Comportamiento():
             ["ir_pulpo" ,            1],
             ["alinearse" ,           0],
             ["velocity_match" ,      0],
-            ["separacion" ,          1],
-            ["evitarcolision" ,      0]
+            ["separacion" ,          4],
+            ["evitarcolision2" ,      4]
             ]
 
     @staticmethod
@@ -368,12 +368,12 @@ class Comportamiento():
 
     # Función que calcula el vextor aceleración y la aceleración angular
     # resultante de aplicar los comportamientos sobre un enemigo
-    def movimiento_total(self, enemigo):
+    def movimiento_total(self):
         aceleracion = [0, 0, 0]
         acel_angular = 0
         for algoritmo in range(0, len(self.comportamiento)):
             if self.comportamiento[algoritmo][1] != 0:
                 com = self.movimientos()[self.comportamiento[algoritmo][0]]
-                aceleracion = suma_v(aceleracion, escalar_v(com(enemigo)[0], self.comportamiento[algoritmo][1]))
-                acel_angular += com(enemigo)[1] * self.comportamiento[algoritmo][1]    
+                aceleracion = suma_v(aceleracion, escalar_v(com()[0], self.comportamiento[algoritmo][1]))
+                acel_angular += com()[1] * self.comportamiento[algoritmo][1]    
         return aceleracion, acel_angular

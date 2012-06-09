@@ -95,7 +95,7 @@ class Personaje(pygame.sprite.Sprite):
         self.image = self.original
         self.rect = self.image.get_rect()      
 
-        self.image = pygame.transform.rotozoom(self.image, (-self.angulo - 90), (1.0+ self.posi[2]*0.0007))        
+        self.image = pygame.transform.rotozoom(self.image, (-self.angulo - 90), (1.0+ self.posi[2]*0.0007))
 
         self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect()
@@ -103,7 +103,7 @@ class Personaje(pygame.sprite.Sprite):
 
         # Para saber si el giro produjo una colisión
         if self.colisionable:
-            if self.colisionar():
+            if len(self.colisionar()) > 0:
                 self.angulo = angulo_anterior
                 self.image = imagen_anterior
                 self.rect = rectangulo_anterior
@@ -112,7 +112,7 @@ class Personaje(pygame.sprite.Sprite):
 
         # Segunda revisada para saber si estan incrustados dos objetos
         if self.colisionable:
-            if self.colisionar():
+            if len(self.colisionar()) > 0:
                 self.acel = suma_v(self.acel, self.separacion_incrustacion()[0])
                 self.acel[2] = 0
                 self.vel[2] = 0
@@ -163,7 +163,6 @@ class Personaje(pygame.sprite.Sprite):
 
     # Revisa si el personaje colisionacon otro elemento colisionable
     def colisionar(self):
-
         # Esta parte se usa para que chocar con un borde de la pantalla 
         # sean considerado como una colisión
         """
@@ -182,14 +181,15 @@ class Personaje(pygame.sprite.Sprite):
         """
         
         p = pygame.sprite.spritecollide(self, grupo_colisionables, False, pygame.sprite.collide_rect)
-
         if len(p) > 1:
+            salida = []
             for objetivo in p:
                 if objetivo != self:
+                    salida = salida + [objetivo]
                     #print self.nombre, " colisiono con ", objetivo.nombre
                     if pygame.sprite.collide_mask(self, objetivo):
-                        return 1
-        return 0               
+                        return salida
+        return []               
 
     # Algoritmo que genera una aceleración "repulsiva" entre el personaje
     # y los objetos colisionables y con altura semejante 
