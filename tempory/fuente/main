@@ -1,6 +1,0 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-# Hecho Por Isaac López Procopio
-# 07-41120
-
-import sys, pygame
